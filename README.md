@@ -10,6 +10,8 @@
 6. Запустите приложение командой python3 main.py.
 7. Откройте браузер и перейдите по ссылке http://localhost:8000.
 
+Запуск одной командой - sudo apt install python3 && git clone https://github.com/kalicyborg666/test_tast_for_algont.git && cd test_tast_for_algont && python3 -m venv env && source env/bin/activate && pip install -r requirements && python3 main.py && open localhost:8000
+
 ## Использование приложения
 После запуска приложения в браузере откроется страница с графиками загрузки процессора. Графики обновляются каждые 5 секунд.
 
