@@ -6,7 +6,7 @@
 2. Скачайте архив с проектом или склонируйте репозиторий с помощью команды git clone https://github.com/kalicyborg666/test_tast_for_algont.git.
 3. Перейдите в директорию с проектом.
 4. Создайте виртуальное окружение командой python3 -m venv env && source env/bin/activate
-5. Установите необходимые зависимости командой pip install -r requirements.txt
+5. Установите необходимые зависимости командой pip install -r requirements
 6. Запустите приложение командой python main.py.
 7. Откройте браузер и перейдите по ссылке http://localhost:8000.
 
