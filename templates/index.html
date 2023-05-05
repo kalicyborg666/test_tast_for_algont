@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CPU Load Monitoring</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="plot1"></div>
+    <div id="plot2"></div>
+
+    <script>
+        function updatePlots() {
+            fetch('/load-data')
+                .then(response => response.json())
+                .then(data => {
+                    const timestamps = data.map(entry => entry.timestamp);
+                    const loads = data.map(entry => entry.load);
+
+                    const plot1 = document.getElementById('plot1');
+                    Plotly.newPlot(plot1, [{
+                        x: timestamps,
+                        y: loads,
+                        type: 'scatter',
+                        mode: 'lines',
+                        line: {color: 'red'}
+                    }], {
+                        title: 'CPU Load History',
+                        xaxis: {
+                            title: 'Time',
+                            tickformat: '%H:%M'
+                        },
+                        yaxis: {title: 'CPU Load (%)'}
+                    });
+
+                    const df = new Date().getTime() - 3600000;
+                    const df_resampled = data.filter(entry => entry.timestamp > df)
+                                             .map(entry => entry.load)
+                                             .reduce((res, load, i, arr) => {
+                                                const n = 60;
+                                                if (i % n === 0) {
+                                                    res.push(arr.slice(i, i + n).reduce((a, b) => a + b) / n);
+                                                }
+                                                return res;
+                                             }, []);
+
+                    const plot2 = document.getElementById('plot2');
+                    Plotly.newPlot(plot2, [{
+                        x: timestamps.slice(-df_resampled.length),
+                        y: df_resampled,
+                        type: 'scatter',
+                        mode: 'lines',
+                        line: {color: 'blue'}
+                    }], {
+                        title: 'CPU Load (1 min average)',
+                        xaxis: {
+                            title: 'Time',
+                            tickformat: '%H:%M'
+                        },
+                        yaxis: {title: 'CPU Load (%)'}
+                    });
+                });
+        }
+
+        $(document).ready(function() {
+            updatePlots();
+            setInterval(function() {
+                $.get('/update-data');
+                updatePlots();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
